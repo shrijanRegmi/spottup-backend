@@ -72,7 +72,9 @@ async function getNotifTokens(
     const adminTokens = await getAdminToken();
 
     for (const adminToken of adminTokens) {
-      tokens.push(adminToken);
+      if (!tokens.includes(adminToken)) {
+        tokens.push(adminToken);
+      }
     }
 
     console.log("Success: getting notification tokens", tokens);
