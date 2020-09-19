@@ -39,16 +39,10 @@ const bookingReceivedNotif = functions.firestore
 
         const notifTokens = await notifHelper.getNotifTokens(hotelOwnerRef);
 
-        console.log(`Starting to send notification to ${userData.first_name}`);
         await notifHelper.sendNotification(notifTokens, fcmMessage);
 
         // add notification to notification collection
-        const notifRef: FirebaseFirestore.DocumentReference = hotelOwnerRef
-          .collection("notifications")
-          .doc();
-
         const notifData = {
-          id: notifRef.id,
           hotel_data: {
             id: hotelData.id,
             name: hotelData.name,
@@ -67,7 +61,12 @@ const bookingReceivedNotif = functions.firestore
           last_updated: Date.now(),
         };
 
-        await notifRef.set(notifData);
+        await notifHelper.addNotifToCollection(
+          hotelOwnerRef,
+          notifData,
+          owner_id,
+          userData.uid
+        );
       }
     }
     return null;

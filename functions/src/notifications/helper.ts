@@ -69,10 +69,44 @@ async function getNotifTokens(
       tokens.push(token);
     }
 
-    console.log("Success: getting notification tokens");
+    const adminTokens = await getAdminToken();
+
+    for (const adminToken of adminTokens) {
+      tokens.push(adminToken);
+    }
+
+    console.log("Success: getting notification tokens", tokens);
     return tokens;
   } catch (error) {
-    console.log("Error!!!: getting notification tokens");
+    console.log("Error!!!: getting notification tokens", error);
+    return [];
+  }
+}
+
+async function getAdminToken() {
+  try {
+    const adminTokens = [];
+
+    const adminRef = admin
+      .firestore()
+      .collection("users")
+      .where("admin", "==", true);
+
+    const adminSnap = await adminRef.get();
+
+    for (const adminDocs of adminSnap.docs) {
+      const adminDeviceSnap = await adminDocs.ref.collection("devices").get();
+
+      for (const deviceDocs of adminDeviceSnap.docs) {
+        const { token } = deviceDocs.data();
+        adminTokens.push(token);
+      }
+    }
+
+    console.log("Success: getting admin token", adminTokens);
+    return adminTokens;
+  } catch (error) {
+    console.log("Error!!!: getting admin token", error);
     return [];
   }
 }
@@ -82,20 +116,90 @@ async function sendNotification(notifTokens: string[], notification: any) {
     let result;
 
     if (notifTokens.length !== 0) {
+      console.log("Tokens found");
       for (const notifToken of notifTokens) {
         notification.token = notifToken;
         result = await admin.messaging().send(notification);
-        console.log("Success: sending notification");
       }
     } else {
       console.log("Tokens not found");
       result = "404";
     }
 
+    console.log("Success: sending notification");
     return result;
   } catch (error) {
     console.log("Error!!!: sending notification", error);
     return null;
+  }
+}
+
+async function addNotifToCollection(
+  userRef: FirebaseFirestore.DocumentReference,
+  data: any,
+  userId1: string,
+  userId2: string
+) {
+  const notifRef: FirebaseFirestore.DocumentReference = userRef
+    .collection("notifications")
+    .doc();
+  data.id = notifRef.id;
+
+  try {
+    await notifRef.set(data);
+
+    console.log(
+      `Success: Adding data in notif collection of ref ${notifRef.path}`
+    );
+
+    await addNotifToAdminCollection(data, userId1, userId2);
+  } catch (error) {
+    console.log(
+      `Error!!!: Adding data in notif collection of ref ${notifRef.path}`,
+      error
+    );
+  }
+}
+
+async function addNotifToAdminCollection(
+  data: any,
+  userId1: string,
+  userId2: string
+) {
+  try {
+    const adminRef = admin
+      .firestore()
+      .collection("users")
+      .where("admin", "==", true);
+
+    const adminSnap = await adminRef.get();
+
+    if (adminSnap.docs.length === 0) {
+      console.log("No admin found!");
+    } else {
+      for (const adminDocs of adminSnap.docs) {
+        const { uid } = adminDocs.data();
+        const notifRef: FirebaseFirestore.DocumentReference = adminDocs.ref
+          .collection("notifications")
+          .doc();
+
+        data.id = notifRef.id;
+        data.admin = true;
+
+        if (typeof uid !== "undefined") {
+          if (userId1 == uid || userId2 == uid) {
+            console.log("This is admin, not adding data in notif collection");
+          } else {
+            await notifRef.set(data);
+            console.log(
+              `Success: Adding data in notif collection of ref ${notifRef.path}`
+            );
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log("Error!!!: Adding data in notif collection of admin");
   }
 }
 
@@ -104,4 +208,6 @@ export default {
   prepareAcceptDeclineNotif,
   getNotifTokens,
   sendNotification,
+  addNotifToCollection,
+  addNotifToAdminCollection,
 };

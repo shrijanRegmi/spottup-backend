@@ -24,14 +24,9 @@ const bookingReceivedNotif = functions.firestore
                 .collection("users")
                 .doc(owner_id);
             const notifTokens = await helper_1.default.getNotifTokens(hotelOwnerRef);
-            console.log(`Starting to send notification to ${userData.first_name}`);
             await helper_1.default.sendNotification(notifTokens, fcmMessage);
             // add notification to notification collection
-            const notifRef = hotelOwnerRef
-                .collection("notifications")
-                .doc();
             const notifData = {
-                id: notifRef.id,
                 hotel_data: {
                     id: hotelData.id,
                     name: hotelData.name,
@@ -49,7 +44,7 @@ const bookingReceivedNotif = functions.firestore
                 booking_id: snap.id,
                 last_updated: Date.now(),
             };
-            await notifRef.set(notifData);
+            await helper_1.default.addNotifToCollection(hotelOwnerRef, notifData, owner_id, userData.uid);
         }
     }
     return null;

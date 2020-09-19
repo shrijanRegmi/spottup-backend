@@ -13,11 +13,17 @@ const bookingAcceptDeclineNotif = functions.firestore
     } = snap.after.data();
 
     const hotelSnap = await hotel_ref.get();
+    const userSnap = await user_ref.get();
 
-    if (hotelSnap.exists) {
+    if (hotelSnap.exists && userSnap.exists) {
       const hotelData = hotelSnap.data();
+      const userData = userSnap.data();
 
-      if (typeof hotelData !== "undefined") {
+      if (typeof hotelData !== "undefined" && typeof userData !== "undefined") {
+        console.log(
+          `User ${userData.first_name} and hotel ${hotelData.name} found`
+        );
+
         if (is_accepted && !is_declined) {
           console.log("Booking is accepted!");
 
@@ -31,39 +37,30 @@ const bookingAcceptDeclineNotif = functions.firestore
 
           await notifHelper.sendNotification(notifTokens, fcm);
 
-          const userSnap: FirebaseFirestore.DocumentSnapshot = await user_ref.get();
+          // add notification to notification collection
+          const notifData = {
+            hotel_data: {
+              id: hotelData.id,
+              name: hotelData.name,
+              dp: hotelData.dp,
+            },
+            user_data: {
+              uid: userData.uid,
+              first_name: userData.first_name,
+              last_name: userData.last_name,
+            },
+            type: 0,
+            is_read: false,
+            hotel_ref: hotel_ref,
+            last_updated: Date.now(),
+          };
 
-          if (userSnap.exists) {
-            const userData = userSnap.data();
-
-            if (typeof userData !== "undefined") {
-              console.log("Adding notification to notification collection");
-              // add notification to notification collection
-              const notifRef: FirebaseFirestore.DocumentReference = user_ref
-                .collection("notifications")
-                .doc();
-
-              const notifData = {
-                id: notifRef.id,
-                hotel_data: {
-                  id: hotelData.id,
-                  name: hotelData.name,
-                  dp: hotelData.dp,
-                },
-                user_data: {
-                  uid: userData.uid,
-                  first_name: userData.first_name,
-                  last_name: userData.last_name,
-                },
-                type: 0,
-                is_read: false,
-                hotel_ref: hotel_ref,
-                last_updated: Date.now(),
-              };
-
-              await notifRef.set(notifData);
-            }
-          }
+          await notifHelper.addNotifToCollection(
+            user_ref,
+            notifData,
+            hotelData.owner_id,
+            userData.uid
+          );
         } else {
           console.log("Booking is declined");
 
@@ -77,41 +74,27 @@ const bookingAcceptDeclineNotif = functions.firestore
 
           await notifHelper.sendNotification(notifTokens, fcm);
 
-          const userSnap: FirebaseFirestore.DocumentSnapshot = await user_ref.get();
+          // add notification to notification collection
+          const notifData = {
+            hotel_data: {
+              id: hotelData.id,
+              name: hotelData.name,
+              dp: hotelData.dp,
+            },
+            user_data: {
+              uid: userData.uid,
+              first_name: userData.first_name,
+              last_name: userData.last_name,
+              photo_url: userData.photo_url,
+            },
+            type: 1,
+            is_read: false,
+            user_ref: user_ref,
+            hotel_ref: hotel_ref,
+            last_updated: Date.now(),
+          };
 
-          if (userSnap.exists) {
-            const userData = userSnap.data();
-
-            if (typeof userData !== "undefined") {
-              console.log("Adding notification to notification collection");
-              // add notification to notification collection
-              const notifRef: FirebaseFirestore.DocumentReference = user_ref
-                .collection("notifications")
-                .doc();
-
-              const notifData = {
-                id: notifRef.id,
-                hotel_data: {
-                  id: hotelData.id,
-                  name: hotelData.name,
-                  dp: hotelData.dp,
-                },
-                user_data: {
-                  uid: userData.uid,
-                  first_name: userData.first_name,
-                  last_name: userData.last_name,
-                  photo_url: userData.photo_url,
-                },
-                type: 1,
-                is_read: false,
-                user_ref: user_ref,
-                hotel_ref: hotel_ref,
-                last_updated: Date.now(),
-              };
-
-              await notifRef.set(notifData);
-            }
-          }
+          await notifHelper.addNotifToCollection(user_ref, notifData, hotelData.owner_id, userData.uid);
         }
       }
     }
