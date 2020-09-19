@@ -189,7 +189,7 @@ async function addNotifToAdminCollection(
         data.admin = true;
 
         if (typeof uid !== "undefined") {
-          if (userId1 == uid || userId2 == uid) {
+          if (userId1 === uid || userId2 === uid) {
             console.log("This is admin, not adding data in notif collection");
           } else {
             await notifRef.set(data);

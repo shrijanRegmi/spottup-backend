@@ -56,7 +56,9 @@ async function getNotifTokens(userRef) {
         }
         const adminTokens = await getAdminToken();
         for (const adminToken of adminTokens) {
-            tokens.push(adminToken);
+            if (!tokens.includes(adminToken)) {
+                tokens.push(adminToken);
+            }
         }
         console.log("Success: getting notification tokens", tokens);
         return tokens;
@@ -144,7 +146,7 @@ async function addNotifToAdminCollection(data, userId1, userId2) {
                 data.id = notifRef.id;
                 data.admin = true;
                 if (typeof uid !== "undefined") {
-                    if (userId1 == uid || userId2 == uid) {
+                    if (userId1 === uid || userId2 === uid) {
                         console.log("This is admin, not adding data in notif collection");
                     }
                     else {
