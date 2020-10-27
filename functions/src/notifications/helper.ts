@@ -57,6 +57,35 @@ function prepareAcceptDeclineNotif(
   };
 }
 
+function prepareScreenshotReceivedNotif(
+  hotelData: FirebaseFirestore.DocumentData,
+  userData: FirebaseFirestore.DocumentData,
+  bookingId: String
+) {
+  const { name } = hotelData;
+  const { first_name, last_name } = userData;
+
+  const notifTitle = "Payment screenshot received";
+  const notifBody = `${first_name} ${last_name} just sent payment screenshots for ${name}`;
+
+  return {
+    notification: {
+      title: notifTitle,
+      body: notifBody,
+    },
+    data: {
+      screen: "payment-screenshot-received-screen",
+      id: bookingId,
+    },
+    android: {
+      notification: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+      },
+    },
+    token: "",
+  };
+}
+
 async function getNotifTokens(
   userRef: FirebaseFirestore.DocumentReference
 ): Promise<string[]> {
@@ -208,6 +237,7 @@ async function addNotifToAdminCollection(
 export default {
   prepareBookingNotification,
   prepareAcceptDeclineNotif,
+  prepareScreenshotReceivedNotif,
   getNotifTokens,
   sendNotification,
   addNotifToCollection,

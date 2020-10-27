@@ -5,4 +5,5 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 exports.bookingReceivedNotif = notification_1.default.bookingReceivedNotif;
 exports.bookingAcceptDeclineNotif = notification_1.default.bookingAcceptDeclineNotif;
+exports.screenshotSubmittedNotif = notification_1.default.screenshotSubmittedNotif;
 //# sourceMappingURL=index.js.map

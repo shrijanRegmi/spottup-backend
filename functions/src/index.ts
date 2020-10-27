@@ -6,3 +6,5 @@ admin.initializeApp();
 exports.bookingReceivedNotif = notifications.bookingReceivedNotif;
 
 exports.bookingAcceptDeclineNotif = notifications.bookingAcceptDeclineNotif;
+
+exports.screenshotSubmittedNotif = notifications.screenshotSubmittedNotif;

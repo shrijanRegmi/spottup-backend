@@ -33,6 +33,7 @@ const bookingAcceptDeclineNotif = functions.firestore
                             uid: userData.uid,
                             first_name: userData.first_name,
                             last_name: userData.last_name,
+                            photo_url: userData.photo_url,
                         },
                         type: 0,
                         is_read: false,
