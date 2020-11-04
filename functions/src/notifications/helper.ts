@@ -178,6 +178,9 @@ async function addNotifToCollection(
 
   try {
     await notifRef.set(data);
+    await userRef.update({
+      notif_count: admin.firestore.FieldValue.increment(1),
+    });
 
     console.log(
       `Success: Adding data in notif collection of ref ${notifRef.path}`
