@@ -9,6 +9,7 @@ exports.tourBookingReceivedNotif =
     notification_1.default.bookingReceivedNotif.tourBookingReceivedNotif;
 exports.vehicleBookingReceivedNotif =
     notification_1.default.bookingReceivedNotif.vehicleBookingReceivedNotif;
+exports.dynamicLinkNotif = notification_1.default.dynamicLinkNotif;
 exports.bookingAcceptDeclineNotif =
     notification_1.default.bookingAcceptDeclineNotif.bookingAcceptDeclineNotif;
 exports.tourAcceptDeclineNotif =

@@ -86,6 +86,25 @@ function prepareScreenshotReceivedNotif(
   };
 }
 
+function prepareDynamicLinkNotif(userData: FirebaseFirestore.DocumentData) {
+  const { first_name, last_name } = userData;
+  const notifTitle = "Congratulations !";
+  const notifBody = `Your friend ${first_name} ${last_name} has successfully installed the app using your invitation link`;
+
+  return {
+    notification: {
+      title: notifTitle,
+      body: notifBody,
+    },
+    android: {
+      notification: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+      },
+    },
+    token: "",
+  };
+}
+
 async function getNotifTokens(
   userRef: FirebaseFirestore.DocumentReference
 ): Promise<string[]> {
@@ -240,6 +259,7 @@ async function addNotifToAdminCollection(
 export default {
   prepareBookingNotification,
   prepareAcceptDeclineNotif,
+  prepareDynamicLinkNotif,
   prepareScreenshotReceivedNotif,
   getNotifTokens,
   sendNotification,

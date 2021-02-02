@@ -68,6 +68,23 @@ function prepareScreenshotReceivedNotif(hotelData, userData, bookingId) {
         token: "",
     };
 }
+function prepareDynamicLinkNotif(userData) {
+    const { first_name, last_name } = userData;
+    const notifTitle = "Congratulations !";
+    const notifBody = `Your friend ${first_name} ${last_name} has successfully installed the app using your invitation link`;
+    return {
+        notification: {
+            title: notifTitle,
+            body: notifBody,
+        },
+        android: {
+            notification: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+            },
+        },
+        token: "",
+    };
+}
 async function getNotifTokens(userRef) {
     try {
         const tokens = [];
@@ -189,6 +206,7 @@ async function addNotifToAdminCollection(data, userId1, userId2) {
 exports.default = {
     prepareBookingNotification,
     prepareAcceptDeclineNotif,
+    prepareDynamicLinkNotif,
     prepareScreenshotReceivedNotif,
     getNotifTokens,
     sendNotification,

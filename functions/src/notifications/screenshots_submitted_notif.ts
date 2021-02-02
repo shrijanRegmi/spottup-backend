@@ -71,6 +71,21 @@ const screenshotSubmittedNotif = functions.firestore
                 booking_for: 0,
               };
 
+              if (
+                userData.invitation_from &&
+                typeof userData.invitation_from.booking_id == "undefined"
+              ) {
+                await admin
+                  .firestore()
+                  .doc(`users/${userData.uid}`)
+                  .update({
+                    invitation_from: {
+                      booking_id: snap.after.id,
+                      uid: userData.invitation_from.uid,
+                    },
+                  });
+              }
+
               await notifHelper.addNotifToCollection(
                 hotelOwnerRef,
                 notifData,
