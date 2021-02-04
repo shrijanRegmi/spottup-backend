@@ -66,6 +66,7 @@ const bookingAcceptDeclineNotif = functions.firestore
                 booking_id: snap.after.id,
                 hotel_ref: hotel_ref,
                 last_updated: Date.now(),
+                booking_for: 0,
               };
 
               await notifHelper.addNotifToCollection(
@@ -106,6 +107,7 @@ const bookingAcceptDeclineNotif = functions.firestore
                 hotel_ref: hotel_ref,
                 booking_id: snap.after.id,
                 last_updated: Date.now(),
+                booking_for: 0,
               };
 
               await notifHelper.addNotifToCollection(
