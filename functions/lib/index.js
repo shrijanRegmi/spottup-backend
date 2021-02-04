@@ -22,4 +22,5 @@ exports.tourScreenshotSubmittedNotif =
     notification_1.default.screenshotSubmittedNotif.tourScreenshotSubmittedNotif;
 exports.vehicleScreenshotSubmittedNotif =
     notification_1.default.screenshotSubmittedNotif.vehicleScreenshotSubmittedNotif;
+exports.withdrawNotif = notification_1.default.withdrawNotif;
 //# sourceMappingURL=index.js.map

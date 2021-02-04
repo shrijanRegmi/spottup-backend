@@ -105,6 +105,25 @@ function prepareDynamicLinkNotif(userData: FirebaseFirestore.DocumentData) {
   };
 }
 
+function prepareWithdrawNotif(userData: FirebaseFirestore.DocumentData) {
+  const { first_name, last_name } = userData;
+  const notifTitle = "Earnings Withdraw";
+  const notifBody = `${first_name} ${last_name} requested to withdraw his earnings. Tap to know more.`;
+
+  return {
+    notification: {
+      title: notifTitle,
+      body: notifBody,
+    },
+    android: {
+      notification: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+      },
+    },
+    token: "",
+  };
+}
+
 async function getNotifTokens(
   userRef: FirebaseFirestore.DocumentReference
 ): Promise<string[]> {
@@ -260,8 +279,10 @@ export default {
   prepareBookingNotification,
   prepareAcceptDeclineNotif,
   prepareDynamicLinkNotif,
+  prepareWithdrawNotif,
   prepareScreenshotReceivedNotif,
   getNotifTokens,
+  getAdminToken,
   sendNotification,
   addNotifToCollection,
   addNotifToAdminCollection,

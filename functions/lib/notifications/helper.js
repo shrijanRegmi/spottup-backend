@@ -85,6 +85,23 @@ function prepareDynamicLinkNotif(userData) {
         token: "",
     };
 }
+function prepareWithdrawNotif(userData) {
+    const { first_name, last_name } = userData;
+    const notifTitle = "Earnings Withdraw";
+    const notifBody = `${first_name} ${last_name} requested to withdraw his earnings. Tap to know more.`;
+    return {
+        notification: {
+            title: notifTitle,
+            body: notifBody,
+        },
+        android: {
+            notification: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+            },
+        },
+        token: "",
+    };
+}
 async function getNotifTokens(userRef) {
     try {
         const tokens = [];
@@ -207,8 +224,10 @@ exports.default = {
     prepareBookingNotification,
     prepareAcceptDeclineNotif,
     prepareDynamicLinkNotif,
+    prepareWithdrawNotif,
     prepareScreenshotReceivedNotif,
     getNotifTokens,
+    getAdminToken,
     sendNotification,
     addNotifToCollection,
     addNotifToAdminCollection,

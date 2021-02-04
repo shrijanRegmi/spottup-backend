@@ -24,3 +24,5 @@ exports.tourScreenshotSubmittedNotif =
   notifications.screenshotSubmittedNotif.tourScreenshotSubmittedNotif;
 exports.vehicleScreenshotSubmittedNotif =
   notifications.screenshotSubmittedNotif.vehicleScreenshotSubmittedNotif;
+
+exports.withdrawNotif = notifications.withdrawNotif;
